@@ -19,3 +19,10 @@ dev = [
     "pytest>=9.0.2",
     "ruff>=0.15.4",
 ]
+
+[tool.ruff]
+line-length = 99
+target-version = "py312"
+
+[tool.mypy]
+strict = true
