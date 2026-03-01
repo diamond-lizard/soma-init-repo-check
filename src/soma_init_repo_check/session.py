@@ -5,6 +5,11 @@ from __future__ import annotations
 import hashlib
 import os
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import requests_cache
+    from requests.auth import AuthBase
 
 
 _APP_NAME = "soma-init-repo-check"
@@ -55,7 +60,7 @@ def secure_cache_file(cache_path: Path) -> None:
         cache_path.chmod(_FILE_MODE)
 
 
-def create_session(cache_path: Path, auth: object) -> object:
+def create_session(cache_path: Path, auth: AuthBase) -> requests_cache.CachedSession:
     """Create a requests_cache.CachedSession with SQLite backend.
 
     Configures: SQLite backend at cache_path, expire_after=0 for forced
