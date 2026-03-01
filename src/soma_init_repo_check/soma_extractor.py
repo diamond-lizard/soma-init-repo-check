@@ -2,6 +2,7 @@
 """Extract repo/host info from parsed soma init s-expressions."""
 from __future__ import annotations
 
+from typing import Any
 from soma_init_repo_check.soma_entries import (
     _get_keyword_str,
     _get_keyword_sym,
@@ -14,7 +15,7 @@ from soma_init_repo_check.soma_entries import (
 
 
 def extract_repos(
-    tree: list, init_file: str,
+    tree: list[Any], init_file: str,
 ) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
     """Extract repo declarations from a parsed soma init file.
 
@@ -43,13 +44,13 @@ def extract_repos(
     return repos, skipped
 
 
-def _find_ensure_plists(tree: list) -> list[list]:
+def _find_ensure_plists(tree: list[Any]) -> list[list[Any]]:
     """Find all :ensure plist values in use-package forms.
 
     Input: parsed s-expression tree.
     Output: list of plist lists from :ensure directives.
     """
-    plists: list[list] = []
+    plists: list[list[Any]] = []
     for form in tree:
         if not isinstance(form, list) or len(form) < 2:
             continue
@@ -61,7 +62,7 @@ def _find_ensure_plists(tree: list) -> list[list]:
     return plists
 
 
-def _get_ensure_value(form: list) -> list | None:
+def _get_ensure_value(form: list[Any]) -> list[Any] | None:
     """Extract the :ensure plist from a use-package form.
 
     Input: a use-package s-expression list.
@@ -77,7 +78,7 @@ def _get_ensure_value(form: list) -> list | None:
 
 
 def _classify_plist(
-    plist: list, init_file: str,
+    plist: list[Any], init_file: str,
 ) -> tuple[str, dict[str, str]] | None:
     """Classify an :ensure plist by host and repo presence.
 

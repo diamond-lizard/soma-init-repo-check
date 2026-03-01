@@ -2,10 +2,11 @@
 """Build result/skip entry dicts for soma init file processing."""
 from __future__ import annotations
 
+from typing import Any
 import sexpdata
 
 
-def _get_keyword_str(plist: list, keyword: str) -> str | None:
+def _get_keyword_str(plist: list[Any], keyword: str) -> str | None:
     """Get the string value for a keyword in a plist.
 
     Input: plist (list of alternating keyword/value), keyword name.
@@ -20,7 +21,7 @@ def _get_keyword_str(plist: list, keyword: str) -> str | None:
     return None
 
 
-def _get_keyword_sym(plist: list, keyword: str) -> str | None:
+def _get_keyword_sym(plist: list[Any], keyword: str) -> str | None:
     """Get the symbol-name value for a keyword in a plist.
 
     Input: plist (list of alternating keyword/value), keyword name.
@@ -31,11 +32,11 @@ def _get_keyword_sym(plist: list, keyword: str) -> str | None:
             continue
         val = plist[i + 1]
         if isinstance(val, sexpdata.Symbol):
-            return val.value()
+            return str(val.value())
     return None
 
 
-def _is_sym(obj: object, name: str) -> bool:
+def _is_sym(obj: Any, name: str) -> bool:
     """Check if obj is a sexpdata Symbol with the given name."""
     return isinstance(obj, sexpdata.Symbol) and obj.value() == name
 

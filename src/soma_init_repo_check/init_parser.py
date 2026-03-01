@@ -2,6 +2,7 @@
 """Parse init.el to extract elpaca bootstrap repo and soma-inits list."""
 from __future__ import annotations
 
+from typing import Any
 import sys
 from pathlib import Path
 
@@ -12,7 +13,7 @@ from soma_init_repo_check.elisp import strip_comments
 _MAX_FILE_SIZE = 1_000_000
 
 
-def read_init_el(emacs_dir: str) -> list:
+def read_init_el(emacs_dir: str) -> list[Any]:
     """Read and parse init.el from the given Emacs directory.
 
     Input: path to the Emacs directory (e.g., ~/.emacs.d/).
@@ -32,7 +33,7 @@ def read_init_el(emacs_dir: str) -> list:
     return _parse_sexp(stripped, path)
 
 
-def _parse_sexp(content: str, path: Path) -> list:
+def _parse_sexp(content: str, path: Path) -> list[Any]:
     """Parse stripped Elisp content with sexpdata.
 
     Input: comment-stripped Elisp content, path for error messages.
@@ -46,7 +47,7 @@ def _parse_sexp(content: str, path: Path) -> list:
         sys.exit(1)
 
 
-def extract_elpaca_repo_url(tree: list) -> str:
+def extract_elpaca_repo_url(tree: list[Any]) -> str:
     """Find the :repo URL in elpaca-order from parsed init.el.
 
     Input: parsed s-expression tree from read_init_el.
@@ -64,19 +65,19 @@ def extract_elpaca_repo_url(tree: list) -> str:
     sys.exit(1)
 
 
-def _extract_repo_keyword(value: object) -> str:
+def _extract_repo_keyword(value: Any) -> str:
     """Extract :repo string from an elpaca-order plist value."""
     items = value[0] if isinstance(value, sexpdata.Quoted) else value
     for i, item in enumerate(items):
         if not _is_symbol(item, ":repo") or i + 1 >= len(items):
             continue
         if isinstance(items[i + 1], str):
-            return items[i + 1]
+            return str(items[i + 1])
     print("Error: :repo not found in elpaca-order", file=sys.stderr)
     sys.exit(1)
 
 
-def extract_soma_inits(tree: list) -> list[str]:
+def extract_soma_inits(tree: list[Any]) -> list[str]:
     """Extract soma-inits symbol list from parsed init.el.
 
     Input: parsed s-expression tree from read_init_el.
@@ -94,7 +95,6 @@ def extract_soma_inits(tree: list) -> list[str]:
     print("Error: soma-inits not found in init.el", file=sys.stderr)
     sys.exit(1)
 
-
-def _is_symbol(obj: object, name: str) -> bool:
+def _is_symbol(obj: Any, name: str) -> bool:
     """Check if obj is a sexpdata Symbol with the given name."""
     return isinstance(obj, sexpdata.Symbol) and obj.value() == name
