@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import json
-from typing import Any
+import requests
 
 
 _MAX_RESPONSE_BYTES = 10 * 1024 * 1024
 _CHUNK_SIZE = 8192
 
 
-def _check_content_length(response: Any) -> str | None:
+def _check_content_length(response: requests.Response) -> str | None:
     """Reject responses whose Content-Length exceeds 10 MB.
 
     Input: response — a requests.Response object.
@@ -22,7 +22,7 @@ def _check_content_length(response: Any) -> str | None:
     return None
 
 
-def _check_content_type(response: Any) -> str | None:
+def _check_content_type(response: requests.Response) -> str | None:
     """Reject responses whose Content-Type does not indicate JSON.
 
     Input: response — a requests.Response object.
@@ -34,7 +34,7 @@ def _check_content_type(response: Any) -> str | None:
     return None
 
 
-def _read_body(response: Any) -> tuple[bytes, str | None]:
+def _read_body(response: requests.Response) -> tuple[bytes, str | None]:
     """Read the response body via streaming with a size limit.
 
     Input: response — a requests.Response object.
@@ -50,7 +50,7 @@ def _read_body(response: Any) -> tuple[bytes, str | None]:
     return b"".join(chunks), None
 
 
-def process_response(response: Any) -> tuple[Any | None, str | None]:
+def process_response(response: requests.Response) -> tuple[object | None, str | None]:
     """Process an API response through the validation pipeline.
 
     Steps: (1) Content-Length check, (2) Content-Type check,
