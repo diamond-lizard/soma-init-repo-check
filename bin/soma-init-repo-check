@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Shell wrapper for soma-init-repo-check.
+# Resolves symlinks, activates the project venv, and invokes the Python module.
+set -euo pipefail
+
+script_path="$(realpath "${BASH_SOURCE[0]}")"
+project_root="$(dirname "$(dirname "$script_path")")"
+
+# shellcheck source=/dev/null
+source "${project_root}/.venv/bin/activate"
+
+exec python -m soma_init_repo_check "$@"
