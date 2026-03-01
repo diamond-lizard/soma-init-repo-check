@@ -59,10 +59,20 @@ class RepoInfo(TypedDict):
     host: str
     init_file: str
 
+ResultEntry = (
+    ForkResult
+    | SkippedNotAForkResult
+    | SkippedNotGithubResult
+    | SkippedNoRepoResult
+    | SkippedNoHostResult
+)
+"""Union of all possible result entry types."""
+
+
 
 class OutputData(TypedDict, total=False):
     """Top-level JSON output structure."""
 
-    results: list[ForkResult | SkippedNotAForkResult | SkippedNotGithubResult | SkippedNoRepoResult | SkippedNoHostResult]
+    results: list[ResultEntry]
     errors: list[ErrorEntry]
     interrupted: bool
