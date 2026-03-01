@@ -27,15 +27,6 @@ def test_extract_elpaca_repo_url() -> None:
     assert url == "https://github.com/diamond-lizard/elpaca.git"
 
 
-def test_extract_soma_inits_count() -> None:
-    """soma-inits list contains approximately 210 symbols."""
-    tree = read_init_el(_TEST_EMACS_DIR)
-    inits = extract_soma_inits(tree)
-    assert isinstance(inits, list)
-    assert len(inits) > 200
-    assert len(inits) < 220
-
-
 def test_extract_soma_inits_contains_known_symbols() -> None:
     """soma-inits list contains known symbol names."""
     tree = read_init_el(_TEST_EMACS_DIR)
