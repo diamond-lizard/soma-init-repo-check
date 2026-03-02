@@ -2,7 +2,10 @@
 """Read and parse individual soma init .el files."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from sexpdata import SexpNode
+
 from soma_init_repo_check.types import InitFileErrorEntry
 from pathlib import Path
 
@@ -15,7 +18,7 @@ _MAX_FILE_SIZE = 1_000_000
 
 def read_init_file(
     path: Path,
-) -> tuple[list[Any] | None, InitFileErrorEntry | None]:
+) -> tuple[list[SexpNode] | None, InitFileErrorEntry | None]:
     """Read and parse a single soma init .el file.
 
     Checks file existence and size, reads with utf-8/replace,
@@ -39,7 +42,7 @@ def read_init_file(
 
 def _try_parse(
     content: str, filename: str,
-) -> tuple[list[Any] | None, InitFileErrorEntry | None]:
+) -> tuple[list[SexpNode] | None, InitFileErrorEntry | None]:
     """Attempt to parse stripped Elisp content.
 
     Input: comment-stripped content, filename for error messages.

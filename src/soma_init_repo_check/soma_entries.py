@@ -2,7 +2,9 @@
 """Build result/skip entry dicts for soma init file processing."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from sexpdata import SexpNode
 from soma_init_repo_check.types import (
     RepoInfo,
     SkippedNoHostResult,
@@ -12,7 +14,7 @@ from soma_init_repo_check.types import (
 import sexpdata
 
 
-def _get_keyword_str(plist: list[Any], keyword: str) -> str | None:
+def _get_keyword_str(plist: list[SexpNode], keyword: str) -> str | None:
     """Get the string value for a keyword in a plist.
 
     Input: plist (list of alternating keyword/value), keyword name.
@@ -27,7 +29,7 @@ def _get_keyword_str(plist: list[Any], keyword: str) -> str | None:
     return None
 
 
-def _get_keyword_sym(plist: list[Any], keyword: str) -> str | None:
+def _get_keyword_sym(plist: list[SexpNode], keyword: str) -> str | None:
     """Get the symbol-name value for a keyword in a plist.
 
     Input: plist (list of alternating keyword/value), keyword name.
@@ -42,7 +44,7 @@ def _get_keyword_sym(plist: list[Any], keyword: str) -> str | None:
     return None
 
 
-def _is_sym(obj: Any, name: str) -> bool:
+def _is_sym(obj: SexpNode, name: str) -> bool:
     """Check if obj is a sexpdata Symbol with the given name."""
     return isinstance(obj, sexpdata.Symbol) and obj.value() == name
 
