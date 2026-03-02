@@ -2,13 +2,13 @@
 """API phase: session setup, repo checking, output writing, summary."""
 from __future__ import annotations
 
-from typing import Any
+from soma_init_repo_check.types import ErrorEntry, RepoInfo, ResultEntry
 
 
 def run_api_phase(
-    repos: list[dict[str, str]],
-    results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    repos: list[RepoInfo],
+    results: list[ResultEntry],
+    errors: list[ErrorEntry],
     output_file: str,
     emacs_dir: str,
     init_count: int,

@@ -27,6 +27,7 @@ class SkippedNotGithubResult(TypedDict):
     status: str
     repo: str
     host: str
+    init_file: str
 
 
 class SkippedNoRepoResult(TypedDict):
@@ -44,10 +45,24 @@ class SkippedNoHostResult(TypedDict):
     repo: str
 
 
-class ErrorEntry(TypedDict):
-    """An error encountered during processing."""
+class ApiErrorEntry(TypedDict):
+    """An API or network error with repo_url."""
 
     repo_url: str
+    error: str
+
+
+class InitFileErrorEntry(TypedDict):
+    """An error related to an init file (missing, oversized, parse)."""
+
+    init_file: str
+    error: str
+
+
+class ValidationErrorEntry(TypedDict):
+    """An error for an invalid OWNER/REPO string."""
+
+    repo: str
     error: str
 
 
@@ -67,6 +82,8 @@ ResultEntry = (
     | SkippedNoHostResult
 )
 """Union of all possible result entry types."""
+ErrorEntry = ApiErrorEntry | InitFileErrorEntry | ValidationErrorEntry
+"""Union of all possible error entry types."""
 
 
 

@@ -3,6 +3,12 @@
 from __future__ import annotations
 
 from typing import Any
+from soma_init_repo_check.types import (
+    RepoInfo,
+    SkippedNoHostResult,
+    SkippedNoRepoResult,
+    SkippedNotGithubResult,
+)
 import sexpdata
 
 
@@ -41,7 +47,7 @@ def _is_sym(obj: Any, name: str) -> bool:
     return isinstance(obj, sexpdata.Symbol) and obj.value() == name
 
 
-def _no_repo_entry(init_file: str) -> dict[str, str]:
+def _no_repo_entry(init_file: str) -> SkippedNoRepoResult:
     """Build a skipped:no_repo_directive entry.
 
     Input: init file name.
@@ -50,7 +56,7 @@ def _no_repo_entry(init_file: str) -> dict[str, str]:
     return {"status": "skipped:no_repo_directive", "init_file": init_file}
 
 
-def _no_host_entry(init_file: str, repo: str) -> dict[str, str]:
+def _no_host_entry(init_file: str, repo: str) -> SkippedNoHostResult:
     """Build a skipped:no_host entry.
 
     Input: init file name, repo value string.
@@ -61,7 +67,7 @@ def _no_host_entry(init_file: str, repo: str) -> dict[str, str]:
 
 def _not_github_entry(
     repo: str, host: str, init_file: str,
-) -> dict[str, str]:
+) -> SkippedNotGithubResult:
     """Build a skipped:not_github entry.
 
     Input: repo value, host symbol name, init file name.
@@ -75,7 +81,7 @@ def _not_github_entry(
     }
 
 
-def _github_entry(repo_val: str, init_file: str) -> dict[str, str]:
+def _github_entry(repo_val: str, init_file: str) -> RepoInfo:
     """Build a GitHub repo entry for API checking.
 
     Input: OWNER/REPO string, init file name.

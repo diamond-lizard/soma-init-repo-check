@@ -2,10 +2,13 @@
 """Count result and error entries by category for the summary."""
 from __future__ import annotations
 
-from typing import Any
+from soma_init_repo_check.type_access import (
+    get_init_file, get_status, is_fork_behind,
+)
+from soma_init_repo_check.types import ErrorEntry, ResultEntry
 
 
-def count_results(results: list[dict[str, Any]]) -> dict[str, int]:
+def count_results(results: list[ResultEntry]) -> dict[str, int]:
     """Count result entries by status category.
 
     Input: results -- list of result entry dicts.
@@ -18,11 +21,11 @@ def count_results(results: list[dict[str, Any]]) -> dict[str, int]:
     }
     host_files: set[str] = set()
     for r in results:
-        status = r.get("status", "")
+        status = get_status(r)
         if status == "skipped:no_repo_directive":
             counts["no_repo"] += 1
         elif status == "skipped:no_host":
-            host_files.add(r["init_file"])
+            host_files.add(get_init_file(r))
         elif status == "skipped:not_github":
             counts["not_github"] += 1
         elif status == "fork":
@@ -34,7 +37,7 @@ def count_results(results: list[dict[str, Any]]) -> dict[str, int]:
     return counts
 
 
-def count_errors(errors: list[dict[str, str]]) -> dict[str, int]:
+def count_errors(errors: list[ErrorEntry]) -> dict[str, int]:
     """Count error entries by category.
 
     Init file errors have 'init_file' but no 'repo_url'. Validation
@@ -59,7 +62,7 @@ def count_errors(errors: list[dict[str, str]]) -> dict[str, int]:
     }
 
 
-def _count_behind(results: list[dict[str, Any]]) -> int:
+def _count_behind(results: list[ResultEntry]) -> int:
     """Count fork results where behind_by > 0.
 
     Input: results -- list of result entry dicts.
@@ -67,5 +70,5 @@ def _count_behind(results: list[dict[str, Any]]) -> int:
     """
     return sum(
         1 for r in results
-        if r.get("status") == "fork" and r.get("behind_by", 0) > 0
+        if is_fork_behind(r)
     )

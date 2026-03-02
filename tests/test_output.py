@@ -30,7 +30,7 @@ def test_not_a_fork_entry_structure() -> None:
 
 def test_not_github_entry_structure() -> None:
     """Not-github entry has status, repo, host (no repo_url)."""
-    e = not_github_entry("user/proj", "gitlab")
+    e = not_github_entry("user/proj", "gitlab", "soma-foo-init.el")
     assert e["status"] == "skipped:not_github"
     assert e["repo"] == "user/proj"
     assert e["host"] == "gitlab"

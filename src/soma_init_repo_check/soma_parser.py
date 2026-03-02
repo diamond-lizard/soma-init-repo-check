@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from soma_init_repo_check.types import InitFileErrorEntry
+
 
 def resolve_init_paths(
     symbols: list[str], emacs_dir: str,
-) -> tuple[list[tuple[str, Path]], list[dict[str, str]]]:
+) -> tuple[list[tuple[str, Path]], list[InitFileErrorEntry]]:
     """Build and validate file paths for each soma-init symbol.
 
     Constructs file paths in <emacs_dir>/soma/inits/ for each symbol.
@@ -20,7 +22,7 @@ def resolve_init_paths(
     """
     inits_dir = (Path(emacs_dir).expanduser() / "soma" / "inits").resolve()
     valid: list[tuple[str, Path]] = []
-    errors: list[dict[str, str]] = []
+    errors: list[InitFileErrorEntry] = []
     for symbol in symbols:
         filename = f"{symbol}.el"
         candidate = inits_dir / filename
@@ -60,7 +62,7 @@ def _is_within(path: Path, base: Path) -> bool:
         return False
 
 
-def _path_error(filename: str, inits_dir: Path) -> dict[str, str]:
+def _path_error(filename: str, inits_dir: Path) -> InitFileErrorEntry:
     """Create an error dict for a path traversal violation.
 
     Input: filename that failed, inits directory path.

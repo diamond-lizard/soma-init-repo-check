@@ -7,7 +7,7 @@ import json
 import os
 import sys
 import tempfile
-from typing import Any
+from soma_init_repo_check.types import ErrorEntry, OutputData, ResultEntry
 
 from soma_init_repo_check.output_assembly import assemble_output
 from soma_init_repo_check.summary import compute_summary
@@ -43,7 +43,7 @@ def _write_atomic(output_file: str, content: str) -> str:
         raise
 
 
-def _write_data(output_file: str, data: dict[str, Any]) -> str:
+def _write_data(output_file: str, data: OutputData) -> str:
     """Serialize data as JSON and write to output_file or stdout.
 
     Returns a description of where results were written.
@@ -61,8 +61,8 @@ def _write_data(output_file: str, data: dict[str, Any]) -> str:
 
 def handle_interrupt(
     output_file: str,
-    partial_results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    partial_results: list[ResultEntry],
+    errors: list[ErrorEntry],
     init_count: int,
     quiet: bool,
 ) -> None:

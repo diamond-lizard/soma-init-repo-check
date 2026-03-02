@@ -2,17 +2,17 @@
 """Assemble the final JSON output structure."""
 from __future__ import annotations
 
-from typing import Any
+from soma_init_repo_check.types import ErrorEntry, OutputData, ResultEntry
 
 from soma_init_repo_check.output_sort import sort_errors
 from soma_init_repo_check.output_sort import sort_results
 
 
 def assemble_output(
-    results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    results: list[ResultEntry],
+    errors: list[ErrorEntry],
     interrupted: bool = False,
-) -> dict[str, Any]:
+) -> OutputData:
     """Assemble the final JSON output with sorted results and errors.
 
     The output has two required top-level keys ('results' and 'errors').
@@ -24,7 +24,7 @@ def assemble_output(
            interrupted -- whether the run was interrupted.
     Output: dict ready for json.dumps with sorted arrays.
     """
-    output: dict[str, Any] = {
+    output: OutputData = {
         "results": sort_results(results),
         "errors": sort_errors(errors),
     }

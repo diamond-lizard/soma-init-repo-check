@@ -2,11 +2,11 @@
 """Construct JSON output entries and assemble the final output structure."""
 from __future__ import annotations
 
-from soma_init_repo_check.types import ForkResult
-from soma_init_repo_check.types import SkippedNotAForkResult
-from soma_init_repo_check.types import SkippedNotGithubResult
-from soma_init_repo_check.types import SkippedNoRepoResult
-from soma_init_repo_check.types import SkippedNoHostResult
+from soma_init_repo_check.types import (
+    ApiErrorEntry, ForkResult, InitFileErrorEntry, SkippedNoHostResult,
+    SkippedNoRepoResult, SkippedNotAForkResult, SkippedNotGithubResult,
+    ValidationErrorEntry,
+)
 
 
 def make_repo_url(owner: str, repo: str) -> str:
@@ -47,13 +47,13 @@ def not_a_fork_entry(owner: str, repo: str) -> SkippedNotAForkResult:
     }
 
 
-def not_github_entry(repo: str, host: str) -> SkippedNotGithubResult:
+def not_github_entry(repo: str, host: str, init_file: str) -> SkippedNotGithubResult:
     """Construct a skipped:not_github result entry.
 
     Input: repo -- OWNER/REPO string. host -- short host identifier.
     Output: SkippedNotGithubResult dict with status, repo, host.
     """
-    return {"status": "skipped:not_github", "repo": repo, "host": host}
+    return {"status": "skipped:not_github", "repo": repo, "host": host, "init_file": init_file}
 
 
 def no_repo_entry(init_file: str) -> SkippedNoRepoResult:
@@ -74,7 +74,7 @@ def no_host_entry(init_file: str, repo: str) -> SkippedNoHostResult:
     return {"status": "skipped:no_host", "init_file": init_file, "repo": repo}
 
 
-def api_error_entry(repo_url: str, error: str) -> dict[str, str]:
+def api_error_entry(repo_url: str, error: str) -> ApiErrorEntry:
     """Build an error entry for an API or network failure.
 
     Input: repo_url -- canonical GitHub URL. error -- description.
@@ -83,7 +83,7 @@ def api_error_entry(repo_url: str, error: str) -> dict[str, str]:
     return {"repo_url": repo_url, "error": error}
 
 
-def init_file_error_entry(init_file: str, error: str) -> dict[str, str]:
+def init_file_error_entry(init_file: str, error: str) -> InitFileErrorEntry:
     """Build an error entry for a missing or unreadable init file.
 
     Input: init_file -- init file name. error -- description.
@@ -92,7 +92,7 @@ def init_file_error_entry(init_file: str, error: str) -> dict[str, str]:
     return {"init_file": init_file, "error": error}
 
 
-def validation_error_entry(repo: str, error: str) -> dict[str, str]:
+def validation_error_entry(repo: str, error: str) -> ValidationErrorEntry:
     """Build an error entry for an invalid OWNER/REPO string.
     Input: repo -- raw invalid string. error -- description.
     Output: dict with repo and error keys.

@@ -2,10 +2,11 @@
 """Inner API checking loop for validated GitHub repos."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import requests_cache
+    from soma_init_repo_check.types import ErrorEntry, RepoInfo, ResultEntry
 
 from tenacity import RetryError
 
@@ -20,9 +21,9 @@ _HOST = "api.github.com"
 
 
 def check_all_repos(
-    repos: list[dict[str, str]],
-    results: list[Any],
-    errors: list[Any],
+    repos: list[RepoInfo],
+    results: list[ResultEntry],
+    errors: list[ErrorEntry],
     session: requests_cache.CachedSession,
     output_file: str,
     total: int,
@@ -55,11 +56,11 @@ def check_all_repos(
 
 
 def _process_one_repo(
-    entry: dict[str, str],
+    entry: RepoInfo,
     session: requests_cache.CachedSession,
     tracker: HostErrorTracker,
-    results: list[Any],
-    errors: list[Any],
+    results: list[ResultEntry],
+    errors: list[ErrorEntry],
     output_file: str,
     owner_repo: str,
     quiet: bool,

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+from soma_init_repo_check.types import InitFileErrorEntry
 from pathlib import Path
 
 import sexpdata
@@ -14,7 +15,7 @@ _MAX_FILE_SIZE = 1_000_000
 
 def read_init_file(
     path: Path,
-) -> tuple[list[Any] | None, dict[str, str] | None]:
+) -> tuple[list[Any] | None, InitFileErrorEntry | None]:
     """Read and parse a single soma init .el file.
 
     Checks file existence and size, reads with utf-8/replace,
@@ -38,7 +39,7 @@ def read_init_file(
 
 def _try_parse(
     content: str, filename: str,
-) -> tuple[list[Any] | None, dict[str, str] | None]:
+) -> tuple[list[Any] | None, InitFileErrorEntry | None]:
     """Attempt to parse stripped Elisp content.
 
     Input: comment-stripped content, filename for error messages.
@@ -51,7 +52,7 @@ def _try_parse(
         return None, _file_error(filename, f"Parse error: {e}")
 
 
-def _file_error(filename: str, msg: str) -> dict[str, str]:
+def _file_error(filename: str, msg: str) -> InitFileErrorEntry:
     """Create an error dict for a file-level problem.
 
     Input: init file name, error message.

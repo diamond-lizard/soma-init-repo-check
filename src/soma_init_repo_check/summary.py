@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Any
+from soma_init_repo_check.types import ErrorEntry, ResultEntry
 
 from soma_init_repo_check.summary_counts import count_errors
 from soma_init_repo_check.summary_counts import count_results
@@ -11,8 +11,8 @@ from soma_init_repo_check.summary_counts import count_results
 
 def compute_summary(
     init_count: int,
-    results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    results: list[ResultEntry],
+    errors: list[ErrorEntry],
 ) -> dict[str, int]:
     """Compute all summary counters from results and errors.
 

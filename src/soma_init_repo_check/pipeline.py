@@ -2,7 +2,7 @@
 """Orchestration pipeline for soma-init-repo-check."""
 from __future__ import annotations
 
-from typing import Any
+from soma_init_repo_check.types import ErrorEntry, RepoInfo, ResultEntry
 
 
 def run_pipeline(
@@ -39,7 +39,7 @@ def run_pipeline(
     deduped = deduplicate_repos(repos)
     valid, val_errors = _validate_all_repos(deduped)
     errors.extend(val_errors)
-    all_results: list[dict[str, Any]] = list(skipped)
+    all_results: list[ResultEntry] = list(skipped)
     _run_api_and_output(
         valid, all_results, errors, output_file,
         emacs_dir, len(soma_inits), quiet, token,
@@ -47,8 +47,8 @@ def run_pipeline(
 
 
 def _validate_all_repos(
-    repos: list[dict[str, str]],
-) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    repos: list[RepoInfo],
+) -> tuple[list[RepoInfo], list[ErrorEntry]]:
     """Validate OWNER/REPO strings, separating valid from invalid.
 
     Input: repos -- list of repo dicts with owner/repo keys.
@@ -57,8 +57,8 @@ def _validate_all_repos(
     from soma_init_repo_check.output import validation_error_entry
     from soma_init_repo_check.validation import validate_owner_repo
 
-    valid: list[dict[str, str]] = []
-    val_errors: list[dict[str, str]] = []
+    valid: list[RepoInfo] = []
+    val_errors: list[ErrorEntry] = []
     for entry in repos:
         owner_repo = f"{entry['owner']}/{entry['repo']}"
         err = validate_owner_repo(owner_repo)
@@ -70,9 +70,9 @@ def _validate_all_repos(
 
 
 def _run_api_and_output(
-    repos: list[dict[str, str]],
-    results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    repos: list[RepoInfo],
+    results: list[ResultEntry],
+    errors: list[ErrorEntry],
     output_file: str,
     emacs_dir: str,
     init_count: int,

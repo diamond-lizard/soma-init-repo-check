@@ -7,7 +7,7 @@ import json
 import os
 import sys
 import tempfile
-from typing import Any
+from soma_init_repo_check.types import OutputData
 
 
 def _current_umask() -> int:
@@ -48,7 +48,7 @@ def _handle_eexist(tmp_path: str, output_file: str) -> None:
     sys.exit(1)
 
 
-def write_atomic(output_file: str, data: dict[str, Any]) -> None:
+def write_atomic(output_file: str, data: OutputData) -> None:
     """Write JSON data atomically using mkstemp + hard link.
 
     Creates a temp file in the same directory as output_file,
@@ -77,7 +77,7 @@ def write_atomic(output_file: str, data: dict[str, Any]) -> None:
         raise
 
 
-def write_stdout(data: dict[str, Any]) -> None:
+def write_stdout(data: OutputData) -> None:
     """Write JSON data directly to stdout for OUTPUT_FILE='-'.
 
     Input: data -- dict to serialize as JSON.
@@ -87,7 +87,7 @@ def write_stdout(data: dict[str, Any]) -> None:
     sys.stdout.write(content)
 
 
-def write_output(output_file: str, data: dict[str, Any]) -> None:
+def write_output(output_file: str, data: OutputData) -> None:
     """Write JSON to output_file or stdout when output_file is '-'.
 
     Input: output_file -- path or '-'. data -- dict to serialize.

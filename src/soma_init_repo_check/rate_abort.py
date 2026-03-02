@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any
+from soma_init_repo_check.types import ErrorEntry, OutputData, ResultEntry
 
 
 class RateLimitExhausted(Exception):
@@ -34,8 +34,8 @@ def build_abort_message(output_file: str) -> str:
 
 def abort_rate_limit(
     output_file: str,
-    partial_results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    partial_results: list[ResultEntry],
+    errors: list[ErrorEntry],
     quiet: bool,
 ) -> None:
     """Abort the run after rate limit retries exhausted.
@@ -49,7 +49,7 @@ def abort_rate_limit(
         quiet -- suppress output if True.
     Output: never returns (calls sys.exit).
     """
-    output: dict[str, list[dict[str, Any]] | list[dict[str, str]] | bool] = {
+    output: OutputData = {
         "results": partial_results,
         "errors": errors,
         "interrupted": True,

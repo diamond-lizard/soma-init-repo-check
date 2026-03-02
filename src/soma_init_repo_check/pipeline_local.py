@@ -2,7 +2,7 @@
 """Local work helpers: collect repos from init files."""
 from __future__ import annotations
 
-from typing import Any
+from soma_init_repo_check.types import ErrorEntry, RepoInfo, ResultEntry
 
 from soma_init_repo_check.soma_extractor import extract_repos
 from soma_init_repo_check.soma_parser import resolve_init_paths
@@ -16,16 +16,16 @@ def collect_all_repos(
     elpaca_repo: str,
     elpaca_host: str,
     elpaca_is_github: bool,
-) -> tuple[list[dict[str, str]], list[dict[str, Any]], list[dict[str, str]]]:
+) -> tuple[list[RepoInfo], list[ResultEntry], list[ErrorEntry]]:
     """Collect repos from all soma init files plus elpaca bootstrap.
 
     Input: soma_inits -- symbol names. emacs_dir -- Emacs dir path.
            elpaca_* -- parsed elpaca bootstrap repo info.
     Output: (github_repos, skipped_entries, error_entries).
     """
-    repos: list[dict[str, str]] = []
-    skipped: list[dict[str, Any]] = []
-    errors: list[dict[str, str]] = []
+    repos: list[RepoInfo] = []
+    skipped: list[ResultEntry] = []
+    errors: list[ErrorEntry] = []
     _add_elpaca(
         repos, skipped, elpaca_owner, elpaca_repo,
         elpaca_host, elpaca_is_github,
@@ -35,8 +35,8 @@ def collect_all_repos(
 
 
 def _add_elpaca(
-    repos: list[dict[str, str]],
-    skipped: list[dict[str, Any]],
+    repos: list[RepoInfo],
+    skipped: list[ResultEntry],
     owner: str, repo: str, host: str, is_github: bool,
 ) -> None:
     """Add the elpaca bootstrap repo to repos or skipped list.
@@ -59,9 +59,9 @@ def _add_elpaca(
 
 
 def _add_soma_repos(
-    repos: list[dict[str, str]],
-    skipped: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    repos: list[RepoInfo],
+    skipped: list[ResultEntry],
+    errors: list[ErrorEntry],
     soma_inits: list[str],
     emacs_dir: str,
 ) -> None:
