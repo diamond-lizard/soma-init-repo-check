@@ -14,7 +14,7 @@ def count_results(results: list[dict[str, Any]]) -> dict[str, int]:
     """
     counts: dict[str, int] = {
         "no_repo": 0, "not_github": 0, "forks": 0,
-        "behind": 0, "not_a_fork": 0,
+        "not_a_fork": 0,
     }
     host_files: set[str] = set()
     for r in results:
@@ -27,10 +27,9 @@ def count_results(results: list[dict[str, Any]]) -> dict[str, int]:
             counts["not_github"] += 1
         elif status == "fork":
             counts["forks"] += 1
-            if r.get("behind_by", 0) > 0:
-                counts["behind"] += 1
         elif status == "skipped:not_a_fork":
             counts["not_a_fork"] += 1
+    counts["behind"] = _count_behind(results)
     counts["no_host"] = len(host_files)
     return counts
 
@@ -58,3 +57,15 @@ def count_errors(errors: list[dict[str, str]]) -> dict[str, int]:
         "validation": validation,
         "api_errors": api_errs,
     }
+
+
+def _count_behind(results: list[dict[str, Any]]) -> int:
+    """Count fork results where behind_by > 0.
+
+    Input: results -- list of result entry dicts.
+    Output: count of forks behind upstream.
+    """
+    return sum(
+        1 for r in results
+        if r.get("status") == "fork" and r.get("behind_by", 0) > 0
+    )
