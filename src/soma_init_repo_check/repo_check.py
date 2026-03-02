@@ -2,7 +2,7 @@
 """Orchestrate repo-info and compare API calls for a single repo."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import requests_cache
@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 from soma_init_repo_check.api import fetch_compare
 from soma_init_repo_check.api import fetch_repo_info
 from soma_init_repo_check.types import ErrorEntry
+from soma_init_repo_check.api_types import RepoInfoResponse
 from soma_init_repo_check.types import ForkResult
 from soma_init_repo_check.types import ResultEntry
 from soma_init_repo_check.types import SkippedNotAForkResult
@@ -46,7 +47,7 @@ def check_repo(
 
 def _check_fork_compare(
     session: requests_cache.CachedSession,
-    info: dict[str, Any],
+    info: RepoInfoResponse,
     owner: str,
     repo: str,
     repo_url: str,

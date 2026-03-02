@@ -2,20 +2,21 @@
 """GitHub API endpoint functions for repo info and branch comparison."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import requests_cache
 from urllib.parse import quote
 
 from soma_init_repo_check.api_request import API_BASE
+from soma_init_repo_check.api_types import CompareResponse, RepoInfoResponse, str_field
 from soma_init_repo_check.api_request import request
 from soma_init_repo_check.response import process_response
 
 
 def fetch_repo_info(
     session: requests_cache.CachedSession, owner: str, repo: str,
-) -> tuple[dict[str, Any] | None, str | None]:
+) -> tuple[RepoInfoResponse | None, str | None]:
     """Fetch repo info from GET /repos/{owner}/{repo}.
 
     URL-encodes path parameters. Uses rate limit retry.
@@ -37,8 +38,8 @@ def fetch_repo_info(
 
 
 def _extract_repo_info(
-    data: dict[str, Any], owner: str, repo: str,
-) -> tuple[dict[str, Any] | None, str | None]:
+    data: dict[str, object], owner: str, repo: str,
+) -> tuple[RepoInfoResponse | None, str | None]:
     """Extract fork status and parent info from parsed repo JSON.
 
     Input: data -- parsed JSON dict. owner, repo -- for error messages.
@@ -52,19 +53,20 @@ def _extract_repo_info(
     parts = parent.get("full_name", "").split("/", 1)
     if len(parts) != 2 or not parts[0] or not parts[1]:
         return None, f"Invalid parent full_name for {owner}/{repo}"
-    return {
+    info: RepoInfoResponse = {
         "fork": True,
         "parent_owner": parts[0],
         "parent_repo": parts[1],
-        "fork_default_branch": data.get("default_branch", ""),
-        "parent_default_branch": parent.get("default_branch", ""),
-    }, None
+        "fork_default_branch": str_field(data, "default_branch"),
+        "parent_default_branch": str_field(parent, "default_branch"),
+    }
+    return info, None
 
 
 def fetch_compare(
     session: requests_cache.CachedSession, upstream_owner: str, upstream_repo: str,
     upstream_branch: str, fork_owner: str, fork_branch: str,
-) -> tuple[dict[str, Any] | None, str | None]:
+) -> tuple[CompareResponse | None, str | None]:
     """Compare branches via GET /repos/{up}/{repo}/compare/{base}...{head}.
 
     URL-encodes all path parameters. Extracts ahead_by and behind_by.
