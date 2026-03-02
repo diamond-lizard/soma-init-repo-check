@@ -86,3 +86,15 @@ def handle_interrupt(
         print_summary(counters)
     print(f"Interrupted. Partial results written to {dest}.", file=sys.stderr)
     sys.exit(1)
+
+
+def handle_pre_loop_interrupt() -> None:
+    """Handle keyboard interrupt before the API loop begins.
+
+    Prints 'Interrupted.' to stderr and exits with code 1
+    without writing any output file.
+
+    Output: never returns (calls sys.exit(1)).
+    """
+    print("Interrupted.", file=sys.stderr)
+    sys.exit(1)
