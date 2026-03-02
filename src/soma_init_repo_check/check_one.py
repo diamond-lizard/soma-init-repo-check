@@ -9,6 +9,8 @@ from tenacity import RetryError
 
 from soma_init_repo_check.errors import classify_network_error
 from soma_init_repo_check.repo_check import check_repo
+from soma_init_repo_check.types import ErrorEntry
+from soma_init_repo_check.types import ResultEntry
 
 _5XX_DELAY = 5.0
 
@@ -19,7 +21,7 @@ def check_one(
     repo: str,
     owner_repo: str,
     is_retry: bool = False,
-) -> tuple[dict[str, Any] | None, dict[str, str] | None, int]:
+) -> tuple[ResultEntry | None, ErrorEntry | None, int]:
     """Check one repo with 5xx retry and exception handling.
 
     Makes the API call via check_repo. On network exceptions,
@@ -44,7 +46,8 @@ def check_one(
         raise
     except Exception as exc:
         msg = classify_network_error(exc, owner_repo)
-        return None, {"repo_url": repo_url, "error": msg}, err_n
+        err_entry: ErrorEntry = {"repo_url": repo_url, "error": msg}
+        return None, err_entry, err_n
     if error is None:
         return result, None, 0
     if not is_retry and _is_5xx(error.get("error", "")):

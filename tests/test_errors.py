@@ -2,12 +2,6 @@
 """Tests for HTTP error classification, threshold, and orchestration."""
 from __future__ import annotations
 
-import json
-from io import BytesIO
-from unittest.mock import patch
-
-import pytest
-import requests
 
 from soma_init_repo_check.errors import classify_http_error
 from soma_init_repo_check.errors import classify_network_error

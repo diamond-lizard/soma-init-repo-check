@@ -6,7 +6,6 @@ from typing import Any
 from urllib.parse import quote
 
 from soma_init_repo_check.api_request import API_BASE
-from soma_init_repo_check.api_request import TIMEOUT
 from soma_init_repo_check.api_request import request
 from soma_init_repo_check.response import process_response
 

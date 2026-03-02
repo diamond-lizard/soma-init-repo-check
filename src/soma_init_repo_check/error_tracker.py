@@ -5,8 +5,7 @@ from __future__ import annotations
 import json
 import sys
 
-from soma_init_repo_check.types import ErrorEntry
-from soma_init_repo_check.types import ResultEntry
+from typing import Any
 
 
 _MAX_ERRORS_PER_HOST = 5
@@ -68,8 +67,8 @@ def build_threshold_message(host: str, output_file: str) -> str:
 def abort_threshold(
     host: str,
     output_file: str,
-    partial_results: list[ResultEntry],
-    errors: list[ErrorEntry],
+    partial_results: list[dict[str, Any]],
+    errors: list[dict[str, str]],
     quiet: bool,
 ) -> None:
     """Abort the run after per-host error threshold exceeded.
@@ -82,7 +81,7 @@ def abort_threshold(
         quiet -- suppress output if True.
     Output: never returns (calls sys.exit).
     """
-    output: dict[str, list[ResultEntry] | list[ErrorEntry] | bool] = {
+    output: dict[str, list[dict[str, Any]] | list[dict[str, str]] | bool] = {
         "results": partial_results,
         "errors": errors,
         "interrupted": True,

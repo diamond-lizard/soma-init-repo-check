@@ -18,8 +18,8 @@ _HOST = "api.github.com"
 
 def check_all_repos(
     repos: list[dict[str, str]],
-    results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    results: list[Any],
+    errors: list[Any],
     session: Any,
     output_file: str,
     total: int,
@@ -55,8 +55,8 @@ def _process_one_repo(
     entry: dict[str, str],
     session: Any,
     tracker: HostErrorTracker,
-    results: list[dict[str, Any]],
-    errors: list[dict[str, str]],
+    results: list[Any],
+    errors: list[Any],
     output_file: str,
     owner_repo: str,
     quiet: bool,
