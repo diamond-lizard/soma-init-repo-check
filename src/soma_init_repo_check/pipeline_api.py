@@ -32,7 +32,9 @@ def run_api_phase(
            token -- GitHub personal access token.
     Output: None. Writes JSON output and prints summary.
     """
+    from soma_init_repo_check.api_request import get_requested_urls
     from soma_init_repo_check.auth import GitHubTokenAuth
+    from soma_init_repo_check.cache import cleanup_stale_entries
     from soma_init_repo_check.check_loop import check_all_repos
     from soma_init_repo_check.output_assembly import assemble_output
     from soma_init_repo_check.pipeline_skip import (
@@ -65,6 +67,7 @@ def run_api_phase(
 
     data = assemble_output(results, errors)
     write_output(output_file, data)
+    cleanup_stale_entries(session, get_requested_urls())
     if not quiet:
         counters = compute_summary(init_count, results, errors)
         print_summary(counters)

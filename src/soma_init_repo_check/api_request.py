@@ -12,6 +12,7 @@ from soma_init_repo_check.rate_retry import stop_after_rate_limit_retries
 
 API_BASE = "https://api.github.com"
 TIMEOUT = 30
+_requested_urls: set[str] = set()
 
 
 def request(session: Any, url: str) -> Any:
@@ -24,9 +25,19 @@ def request(session: Any, url: str) -> Any:
     Output: requests.Response from the API.
     Raises: tenacity.RetryError if rate limit retries exhausted.
     """
+    _requested_urls.add(url)
     retryer = Retrying(
         retry=should_retry_rate_limit,
         wait=RateLimitWait(),
         stop=stop_after_rate_limit_retries,
     )
     return retryer(session.get, url, timeout=TIMEOUT)
+
+
+def get_requested_urls() -> frozenset[str]:
+    """Return the set of URLs requested during this process run.
+
+    Input: None.
+    Output: frozenset of URL strings requested via request().
+    """
+    return frozenset(_requested_urls)
