@@ -5,30 +5,10 @@ from __future__ import annotations
 from typing import Any
 from urllib.parse import quote
 
-from tenacity import Retrying
-
-from soma_init_repo_check.rate_retry import RateLimitWait
-from soma_init_repo_check.rate_retry import should_retry_rate_limit
-from soma_init_repo_check.rate_retry import stop_after_rate_limit_retries
+from soma_init_repo_check.api_request import API_BASE
+from soma_init_repo_check.api_request import TIMEOUT
+from soma_init_repo_check.api_request import request
 from soma_init_repo_check.response import process_response
-
-_API_BASE = "https://api.github.com"
-_TIMEOUT = 30
-
-
-def _request(session: Any, url: str) -> Any:
-    """Make an API request with rate limit retry via tenacity.
-
-    Input: session -- CachedSession. url -- fully constructed API URL.
-    Output: requests.Response from the API.
-    Raises: tenacity.RetryError if rate limit retries exhausted.
-    """
-    retryer = Retrying(
-        retry=should_retry_rate_limit,
-        wait=RateLimitWait(),
-        stop=stop_after_rate_limit_retries,
-    )
-    return retryer(session.get, url, timeout=_TIMEOUT)
 
 
 def fetch_repo_info(
@@ -42,8 +22,8 @@ def fetch_repo_info(
     Input: session -- CachedSession. owner, repo -- repo identifiers.
     Output: (info_dict, None) on success, (None, error) on failure.
     """
-    url = f"{_API_BASE}/repos/{quote(owner, safe='')}/{quote(repo, safe='')}"
-    response = _request(session, url)
+    url = f"{API_BASE}/repos/{quote(owner, safe='')}/{quote(repo, safe='')}"
+    response = request(session, url)
     if response.status_code != 200:
         return None, f"HTTP {response.status_code} for {owner}/{repo}"
     data, err = process_response(response)
@@ -96,10 +76,10 @@ def fetch_compare(
     base_spec = quote(upstream_branch, safe="")
     head_spec = quote(f"{fork_owner}:{fork_branch}", safe="")
     url = (
-        f"{_API_BASE}/repos/{quote(upstream_owner, safe='')}"
+        f"{API_BASE}/repos/{quote(upstream_owner, safe='')}"
         f"/{quote(upstream_repo, safe='')}/compare/{base_spec}...{head_spec}"
     )
-    response = _request(session, url)
+    response = request(session, url)
     if response.status_code != 200:
         return None, f"HTTP {response.status_code} comparing branches"
     data, err = process_response(response)
