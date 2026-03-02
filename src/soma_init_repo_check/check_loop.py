@@ -2,7 +2,10 @@
 """Inner API checking loop for validated GitHub repos."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    import requests_cache
 
 from tenacity import RetryError
 
@@ -20,7 +23,7 @@ def check_all_repos(
     repos: list[dict[str, str]],
     results: list[Any],
     errors: list[Any],
-    session: Any,
+    session: requests_cache.CachedSession,
     output_file: str,
     total: int,
     counter: int,
@@ -53,7 +56,7 @@ def check_all_repos(
 
 def _process_one_repo(
     entry: dict[str, str],
-    session: Any,
+    session: requests_cache.CachedSession,
     tracker: HostErrorTracker,
     results: list[Any],
     errors: list[Any],

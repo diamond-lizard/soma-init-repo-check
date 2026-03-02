@@ -2,7 +2,11 @@
 """Shared HTTP request helper with rate limit retry for GitHub API."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import requests
+    import requests_cache
 
 from tenacity import Retrying
 
@@ -15,7 +19,7 @@ TIMEOUT = 30
 _requested_urls: set[str] = set()
 
 
-def request(session: Any, url: str) -> Any:
+def request(session: requests_cache.CachedSession, url: str) -> requests.Response:
     """Make an API request with rate limit retry via tenacity.
 
     Creates a fresh Retrying instance per request with rate limit

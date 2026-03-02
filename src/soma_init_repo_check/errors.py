@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import time
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import requests
+    import requests_cache
 from urllib.parse import urlparse
 
 
@@ -37,7 +41,7 @@ def is_server_error(status_code: int) -> bool:
     return 500 <= status_code < 600
 
 
-def retry_server_error(session: Any, url: str) -> Any:
+def retry_server_error(session: requests_cache.CachedSession, url: str) -> requests.Response:
     """Retry a failed request once after a 5-second delay.
 
     Uses the standard request mechanism including rate limit retry

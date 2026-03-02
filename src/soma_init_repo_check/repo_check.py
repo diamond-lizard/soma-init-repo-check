@@ -2,7 +2,10 @@
 """Orchestrate repo-info and compare API calls for a single repo."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    import requests_cache
 
 from soma_init_repo_check.api import fetch_compare
 from soma_init_repo_check.api import fetch_repo_info
@@ -13,7 +16,7 @@ from soma_init_repo_check.types import SkippedNotAForkResult
 
 
 def check_repo(
-    session: Any, owner: str, repo: str,
+    session: requests_cache.CachedSession, owner: str, repo: str,
 ) -> tuple[ResultEntry | None, ErrorEntry | None]:
     """Check a single GitHub repo's fork status and compare branches.
 
@@ -42,7 +45,7 @@ def check_repo(
 
 
 def _check_fork_compare(
-    session: Any,
+    session: requests_cache.CachedSession,
     info: dict[str, Any],
     owner: str,
     repo: str,

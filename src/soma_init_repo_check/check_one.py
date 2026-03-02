@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import time
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import requests_cache
 
 from tenacity import RetryError
 
@@ -16,7 +19,7 @@ _5XX_DELAY = 5.0
 
 
 def check_one(
-    session: Any,
+    session: requests_cache.CachedSession,
     owner: str,
     repo: str,
     owner_repo: str,

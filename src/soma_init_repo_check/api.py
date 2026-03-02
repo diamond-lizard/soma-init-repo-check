@@ -2,7 +2,10 @@
 """GitHub API endpoint functions for repo info and branch comparison."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    import requests_cache
 from urllib.parse import quote
 
 from soma_init_repo_check.api_request import API_BASE
@@ -11,7 +14,7 @@ from soma_init_repo_check.response import process_response
 
 
 def fetch_repo_info(
-    session: Any, owner: str, repo: str,
+    session: requests_cache.CachedSession, owner: str, repo: str,
 ) -> tuple[dict[str, Any] | None, str | None]:
     """Fetch repo info from GET /repos/{owner}/{repo}.
 
@@ -59,7 +62,7 @@ def _extract_repo_info(
 
 
 def fetch_compare(
-    session: Any, upstream_owner: str, upstream_repo: str,
+    session: requests_cache.CachedSession, upstream_owner: str, upstream_repo: str,
     upstream_branch: str, fork_owner: str, fork_branch: str,
 ) -> tuple[dict[str, Any] | None, str | None]:
     """Compare branches via GET /repos/{up}/{repo}/compare/{base}...{head}.
