@@ -9,4 +9,5 @@ project_root="$(dirname "$(dirname "$script_path")")"
 # shellcheck source=/dev/null
 source "${project_root}/.venv/bin/activate"
 
+export SOMA_PROG_NAME="$0"
 exec python -m soma_init_repo_check "$@"
