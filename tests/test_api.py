@@ -35,7 +35,7 @@ def _get_session():
 def test_fetch_repo_info_fork() -> None:
     """Fetch info for a known fork and verify fork fields."""
     session = _get_session()
-    info, err = fetch_repo_info(session, "diamond-lizard", "elpaca")
+    info, err = fetch_repo_info(session, "emacs-packages", "elpaca")
     assert err is None
     assert info is not None
     assert info["fork"] is True
@@ -57,13 +57,13 @@ def test_fetch_repo_info_not_fork() -> None:
 def test_fetch_compare_on_fork() -> None:
     """Compare branches on a known fork and verify ahead/behind."""
     session = _get_session()
-    info, err = fetch_repo_info(session, "diamond-lizard", "elpaca")
+    info, err = fetch_repo_info(session, "emacs-packages", "elpaca")
     assert err is None and info is not None and info["fork"] is True
     cmp, cmp_err = fetch_compare(
         session,
         info["parent_owner"], info["parent_repo"],
         info["parent_default_branch"],
-        "diamond-lizard", info["fork_default_branch"],
+        "emacs-packages", info["fork_default_branch"],
     )
     assert cmp_err is None
     assert cmp is not None
