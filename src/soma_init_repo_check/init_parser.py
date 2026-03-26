@@ -77,7 +77,7 @@ def extract_soma_inits(tree: list[SexpNode]) -> list[str]:
     for form in tree:
         if not isinstance(form, list) or len(form) < 3:
             continue
-        if not is_symbol(form[0], "setq"):
+        if not (is_symbol(form[0], "setq") or is_symbol(form[0], "defvar")):
             continue
         if not is_symbol(form[1], "soma-inits"):
             continue
